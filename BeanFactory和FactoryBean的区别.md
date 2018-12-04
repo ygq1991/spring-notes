@@ -42,23 +42,13 @@ protected <T> T doGetBean(
    final String beanName = transformedBeanName(name);
    Object bean;
 
-   // Eagerly check singleton cache for manually registered singletons.
    //这里是获取预先初始化单例实例，可能拿到普通的实例，也可能拿到FactoryBean实例
    Object sharedInstance = getSingleton(beanName);
    if (sharedInstance != null && args == null) {
-      if (logger.isDebugEnabled()) {
-         if (isSingletonCurrentlyInCreation(beanName)) {
-            logger.debug("Returning eagerly cached instance of singleton bean '" + beanName +
-                  "' that is not fully initialized yet - a consequence of a circular reference");
-         }
-         else {
-            logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
-         }
-      }
-      //这里如果拿到了类型，就进行实例化
+		//......
+		//这里如果拿到了类型，就进行实例化
       bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
    }
-
    else {
   		//.......
     }
@@ -84,12 +74,6 @@ protected Object getObjectForBeanInstance(
    if (BeanFactoryUtils.isFactoryDereference(name) && !(beanInstance instanceof FactoryBean)) {
       throw new BeanIsNotAFactoryException(transformedBeanName(name), 				  beanInstance.getClass());
    }
-
-   // Now we have the bean instance, which may be a normal bean or a FactoryBean.
-   // If it's a FactoryBean, we use it to create a bean instance, unless the
-   // caller actually wants a reference to the factory.
-
-
    //如果实例不是factoryBean，或者name有 &前缀，那就把取出来的实例直接返回，包括 factoryBean
    if (!(beanInstance instanceof FactoryBean) || BeanFactoryUtils.isFactoryDereference(name)) {
       return beanInstance;
@@ -102,14 +86,7 @@ protected Object getObjectForBeanInstance(
       object = getCachedObjectForFactoryBean(beanName);
    }
    if (object == null) {
-      // Return bean instance from factory.
-      FactoryBean<?> factory = (FactoryBean<?>) beanInstance;
-      // Caches object obtained from FactoryBean if it is a singleton.
-      if (mbd == null && containsBeanDefinition(beanName)) {
-      //获取BeanDefinition
-         mbd = getMergedLocalBeanDefinition(beanName);
-      }
-      boolean synthetic = (mbd != null && mbd.isSynthetic());
+      //......
       //真正调用FactoryBean的getObject的地方
       object = getObjectFromFactoryBean(factory, beanName, !synthetic);
    }
